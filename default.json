@@ -4,6 +4,10 @@
     "config:recommended",
     ":semanticCommits"
   ],
+  "description": "Renovate updates go.mod and go.sum by calling `go get`, which ADDS the new sums and leaves the superseded ones behind. Any lane asserting that `go mod tidy` produces no diff then fails on go.sum alone, for a module that is perfectly sound, with a message naming no file -- so it reads like a defect in the dependency rather than leftover bookkeeping. Twenty-eight pull requests failed that way in two days: eleven on the morning of 2026-09-02, seventeen that evening on purego v0.10.2 -> v0.11.0. go-macos/hotkey#12 is one of them, and the repair commit (9c14c321) deleted four go.sum lines and touched nothing else. gomodTidy has Renovate run `go mod tidy` itself, before the pull request exists, so the drift never reaches a branch. It is a no-op in a repository with no Go module.",
+  "postUpdateOptions": [
+    "gomodTidy"
+  ],
   "packageRules": [
     {
       "description": "One pull request per repository for everything non-breaking, rather than one per dependency. Merging them singly means every merge rebases the others and restarts their checks: one run over an organisation of 34 repositories updated 109 branches and merged 2. Grouped, a repository needs one round of checks instead of dozens.",
