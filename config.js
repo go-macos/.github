@@ -21,4 +21,28 @@ module.exports = {
   requireConfig: 'optional',
   dependencyDashboard: true,
   repositoryCache: 'enabled',
+
+  // default.json beside this file is a PRESET, and a preset reaches a
+  // repository only through an `extends` that names it. Being in the
+  // organisation applies it to nothing. With onboarding:false and
+  // requireConfig:'optional' above, a repository carrying no config file is
+  // processed with Renovate's factory defaults and says so only at debug level:
+  //
+  //     DEBUG: No renovate config file found (repository=go-macos/notify)
+  //
+  // Measured on 2026-09-03: 10 of the 33 repositories here, and 77 of the 835
+  // across the 117 organisations that actually run Renovate. On every one of
+  // them the Go toolchain rule in default.json was never in force -- the rule
+  // written because go 1.27.0 auto-merged into seven repositories and because
+  // go1.27.0 miscompiles on loong64 (golang/go#81000).
+  //
+  // inheritConfig reads that file before each repository regardless of what the
+  // repository carries, so the policy is not something a repository opts into.
+  inheritConfig: true,
+  inheritConfigRepoName: '{{parentOrg}}/.github',
+  inheritConfigFileName: 'default.json',
+  // And it must be LOUD when it is not found. Left false, Renovate silently
+  // proceeds without the policy -- which is the exact failure this is fixing,
+  // reintroduced one level up.
+  inheritConfigStrict: true,
 };
