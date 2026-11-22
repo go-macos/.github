@@ -19,7 +19,7 @@ module.exports = {
   autodiscoverFilter: ['go-macos/**'],
   onboarding: false,
   requireConfig: 'optional',
-  dependencyDashboard: true,
+  dependencyDashboard: { enabled: true },
   repositoryCache: 'enabled',
 
   // default.json beside this file is a PRESET, and a preset reaches a
